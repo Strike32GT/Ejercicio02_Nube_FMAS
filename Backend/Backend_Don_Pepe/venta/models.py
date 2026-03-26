@@ -5,7 +5,7 @@ from cliente.models import Cliente
 
 class Venta(models.Model):
     id_venta = models.AutoField(primary_key=True)
-    cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True, related_name='ventas')
+    cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True, related_name='ventas', db_column='cliente')
     fecha = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=2)
 

@@ -12,7 +12,6 @@ class Venta(models.Model):
 
     class Meta:
         db_table = 'venta'
-        app_label = 'categoria'
 
 
     def __str__(self):

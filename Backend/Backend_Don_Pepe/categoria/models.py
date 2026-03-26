@@ -9,6 +9,9 @@ class Categoria(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+    class Meta:
+        db_table = 'categoria'
+
 
     def __str__(self):
         return self.nombre

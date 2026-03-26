@@ -9,5 +9,10 @@ class Cliente(models.Model) :
     estado = models.BooleanField(default=True)
 
 
+    class Meta:
+        db_table = 'cliente'
+
+
+
     def __str__(self):
         return self.nombre

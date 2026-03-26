@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = "http://127.0.0.1:8000/api/clientes/";
+const API_URL = "https://api-backend-don-pepe.onrender.com/api/clientes/";
 
 export const getClientes = async () => {
   try {

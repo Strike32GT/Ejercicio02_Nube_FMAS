@@ -10,5 +10,11 @@ class Producto(models.Model):
     estado = models.BooleanField(default=True)
 
 
+    class Meta:
+        db_table = 'producto'
+
+
+
+
     def __str__(self):
         return self.nombre

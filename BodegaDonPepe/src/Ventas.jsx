@@ -24,12 +24,12 @@ const Ventas = () => {
     fetchVentas();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id_venta) => {
     if (window.confirm('¿Estás seguro de eliminar esta venta?')) {
       try {
-        const success = await eliminarVenta(id);
+        const success = await eliminarVenta(id_venta);
         if (success) {
-          setVentas(ventas.filter(venta => venta.id !== id));
+          setVentas(ventas.filter(venta => venta.id_venta !== id_venta));
         }
       } catch (error) {
         console.error('Error al eliminar venta:', error);
@@ -43,22 +43,9 @@ const Ventas = () => {
   };
 
   const filteredVentas = ventas.filter(venta =>
-    venta.cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    venta.producto.toLowerCase().includes(searchTerm.toLowerCase())
+    venta.id_cliente && venta.id_cliente.toString().includes(searchTerm.toLowerCase()) ||
+    venta.total && venta.total.toString().includes(searchTerm.toLowerCase())
   );
-
-  const getEstadoBadge = (estado) => {
-    switch(estado) {
-      case 'Completado':
-        return 'bg-green-100 text-green-800';
-      case 'Pendiente':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'Cancelado':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
 
   if (loading) {
     return (
@@ -103,29 +90,17 @@ const Ventas = () => {
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Cliente</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredVentas.map((venta) => (
-                <tr key={venta.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{venta.id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{venta.cliente}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{venta.producto}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{venta.cantidad}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{venta.total}</td>
+                <tr key={venta.id_venta} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{venta.id_venta}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{venta.fecha}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getEstadoBadge(venta.estado)}`}>
-                      {venta.estado}
-                    </span>
-                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div className="flex items-center space-x-3">
                       <button className="text-blue-600 hover:text-blue-900 transition-colors" title="Ver detalles">

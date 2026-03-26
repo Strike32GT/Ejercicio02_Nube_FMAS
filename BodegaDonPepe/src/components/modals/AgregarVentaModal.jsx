@@ -2,41 +2,28 @@ import React, { useState, useEffect } from 'react';
 
 const AgregarVentaModal = ({ isOpen, onClose, onVentaAgregada }) => {
   const [formData, setFormData] = useState({
-    cliente: '',
-    producto: '',
-    cantidad: '',
-    precioUnitario: '',
-    total: '',
-    fecha: new Date().toISOString().split('T')[0],
-    estado: 'Pendiente'
+    id_cliente: '',
+    total: ''
   });
   const [clientes, setClientes] = useState([]);
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchClientes = async () => {
       try {
-        // Importar y obtener datos reales
         const { getClientes } = await import('../../api/clientes');
-        const { getProductos } = await import('../../api/productos');
-        
-        const [clientesData, productosData] = await Promise.all([
-          getClientes(),
-          getProductos()
-        ]);
-        
+        const clientesData = await getClientes();
         setClientes(clientesData);
-        setProductos(productosData);
       } catch (error) {
-        console.error('Error al cargar datos:', error);
+        console.error('Error al cargar clientes:', error);
       } finally {
         setLoading(false);
       }
     };
 
     if (isOpen) {
-      fetchData();
+      fetchClientes();
     }
   }, [isOpen]);
 
@@ -56,13 +43,8 @@ const AgregarVentaModal = ({ isOpen, onClose, onVentaAgregada }) => {
       
       // Resetear formulario y cerrar modal
       setFormData({
-        cliente: '',
-        producto: '',
-        cantidad: '',
-        precioUnitario: '',
-        total: '',
-        fecha: new Date().toISOString().split('T')[0],
-        estado: 'Pendiente'
+        id_cliente: '',
+        total: ''
       });
       onClose();
     } catch (error) {
@@ -76,18 +58,6 @@ const AgregarVentaModal = ({ isOpen, onClose, onVentaAgregada }) => {
       ...formData,
       [e.target.name]: e.target.value
     });
-
-    // Calcular total automáticamente
-    if (e.target.name === 'cantidad' || e.target.name === 'precioUnitario') {
-      const cantidad = e.target.name === 'cantidad' ? e.target.value : formData.cantidad;
-      const precio = e.target.name === 'precioUnitario' ? e.target.value : formData.precioUnitario;
-      const total = (parseFloat(cantidad) || 0) * (parseFloat(precio) || 0);
-      setFormData(prev => ({
-        ...prev,
-        [e.target.name]: e.target.value,
-        total: total.toFixed(2)
-      }));
-    }
   };
 
   if (!isOpen) return null;
@@ -116,8 +86,8 @@ const AgregarVentaModal = ({ isOpen, onClose, onVentaAgregada }) => {
                 Cliente
               </label>
               <select
-                name="cliente"
-                value={formData.cliente}
+                name="id_cliente"
+                value={formData.id_cliente}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
@@ -125,7 +95,7 @@ const AgregarVentaModal = ({ isOpen, onClose, onVentaAgregada }) => {
               >
                 <option value="">Seleccionar cliente</option>
                 {clientes.map((cliente) => (
-                  <option key={cliente.id} value={cliente.id}>
+                  <option key={cliente.id_cliente} value={cliente.id_cliente}>
                     {cliente.nombre}
                   </option>
                 ))}
@@ -134,101 +104,18 @@ const AgregarVentaModal = ({ isOpen, onClose, onVentaAgregada }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Producto
-              </label>
-              <select
-                name="producto"
-                value={formData.producto}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
-                disabled={loading}
-              >
-                <option value="">Seleccionar producto</option>
-                {productos.map((producto) => (
-                  <option key={producto.id} value={producto.id}>
-                    {producto.nombre} - S/{producto.precio}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Cantidad
-                </label>
-                <input
-                  type="number"
-                  name="cantidad"
-                  value={formData.cantidad}
-                  onChange={handleChange}
-                  min="1"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="0"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Precio Unitario
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  name="precioUnitario"
-                  value={formData.precioUnitario}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="0.00"
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Total
               </label>
               <input
-                type="text"
+                type="number"
+                step="0.01"
                 name="total"
                 value={formData.total}
-                readOnly
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 font-semibold"
-                placeholder="S/ 0.00"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Fecha
-              </label>
-              <input
-                type="date"
-                name="fecha"
-                value={formData.fecha}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="0.00"
                 required
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Estado
-              </label>
-              <select
-                name="estado"
-                value={formData.estado}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="Pendiente">Pendiente</option>
-                <option value="Completado">Completado</option>
-                <option value="Cancelado">Cancelado</option>
-              </select>
             </div>
           </div>
 

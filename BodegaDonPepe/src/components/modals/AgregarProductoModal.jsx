@@ -3,11 +3,10 @@ import React, { useState, useEffect } from 'react';
 const AgregarProductoModal = ({ isOpen, onClose, onProductoAgregado }) => {
   const [formData, setFormData] = useState({
     nombre: '',
-    categoria: '',
+    id_categoria: '',
     stock: '',
     precio: '',
-    descripcion: '',
-    estado: 'Activo'
+    estado: true
   });
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,11 +46,10 @@ const AgregarProductoModal = ({ isOpen, onClose, onProductoAgregado }) => {
       // Resetear formulario y cerrar modal
       setFormData({
         nombre: '',
-        categoria: '',
+        id_categoria: '',
         stock: '',
         precio: '',
-        descripcion: '',
-        estado: 'Activo'
+        estado: true
       });
       onClose();
     } catch (error) {
@@ -108,8 +106,8 @@ const AgregarProductoModal = ({ isOpen, onClose, onProductoAgregado }) => {
                 Categoría
               </label>
               <select
-                name="categoria"
-                value={formData.categoria}
+                name="id_categoria"
+                value={formData.id_categoria}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
@@ -117,7 +115,7 @@ const AgregarProductoModal = ({ isOpen, onClose, onProductoAgregado }) => {
               >
                 <option value="">Seleccionar categoría</option>
                 {categorias.map((categoria) => (
-                  <option key={categoria.id} value={categoria.id}>
+                  <option key={categoria.id_categoria} value={categoria.id_categoria}>
                     {categoria.nombre}
                   </option>
                 ))}
@@ -159,31 +157,20 @@ const AgregarProductoModal = ({ isOpen, onClose, onProductoAgregado }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Descripción
-              </label>
-              <textarea
-                name="descripcion"
-                value={formData.descripcion}
-                onChange={handleChange}
-                rows="3"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Descripción del producto..."
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Estado
               </label>
-              <select
-                name="estado"
-                value={formData.estado}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="Activo">Activo</option>
-                <option value="Inactivo">Inactivo</option>
-              </select>
+              <div className="flex items-center space-x-3">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="estado"
+                    checked={formData.estado}
+                    onChange={(e) => setFormData({...formData, estado: e.target.checked})}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <span className="ml-2 text-sm text-gray-700">Activo</span>
+                </label>
+              </div>
             </div>
           </div>
 

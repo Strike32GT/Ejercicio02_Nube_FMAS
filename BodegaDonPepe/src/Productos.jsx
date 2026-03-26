@@ -24,12 +24,12 @@ const Productos = () => {
     fetchProductos();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id_producto) => {
     if (window.confirm('¿Estás seguro de eliminar este producto?')) {
       try {
-        const success = await eliminarProducto(id);
+        const success = await eliminarProducto(id_producto);
         if (success) {
-          setProductos(productos.filter(producto => producto.id !== id));
+          setProductos(productos.filter(producto => producto.id_producto !== id_producto));
         }
       } catch (error) {
         console.error('Error al eliminar producto:', error);
@@ -100,8 +100,8 @@ const Productos = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredProductos.map((producto) => (
-                <tr key={producto.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{producto.id}</td>
+                <tr key={producto.id_producto} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{producto.id_producto}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{producto.nombre}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{producto.categoria}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{producto.stock}</td>
@@ -121,7 +121,7 @@ const Productos = () => {
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button 
-                        onClick={() => handleDelete(producto.id)}
+                        onClick={() => handleDelete(producto.id_producto)}
                         className="text-red-600 hover:text-red-900 transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
